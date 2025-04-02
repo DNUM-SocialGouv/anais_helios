@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: helios__missions
+    description:
+      Modèle fusionnant les missions SIICEA et les décisions associées,
+      en utilisant les modèles de staging centralisés.
+
+  - name: helios__sirec
+    description:
+      Modèle d’agrégation des réclamations SIREC par année, statut ('en cours' / 'clot')
+      et par motifs IGAS.
+
+  - name: helios__sivss
+    description:
+      Modèle filtrant les signalements issus de SIVSS pour ne conserver
+      que ceux clôturés entre 2022 et 2024 ou sans date de clôture explicite.
