@@ -5,8 +5,8 @@ from typing import Literal
 from dotenv import load_dotenv
 
 # === Modules ===
-from pipeline.load_yml import load_metadata_YAML
-from pipeline.logging_management import setup_logger
+from pipeline.utils.load_yml import load_metadata_YAML
+from pipeline.utils.logging_management import setup_logger
 from pipeline.pipeline_orchestration import (anais_staging_pipeline,
                                              local_staging_pipeline,
                                              anais_project_pipeline,

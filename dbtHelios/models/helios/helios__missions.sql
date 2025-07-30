@@ -1,14 +1,14 @@
 with all_inspections as (
 
     select
-        missions.identifiant_de_la_mission,
+        missions.identifiant_mission,
         missions.code_theme_igas,
         missions.theme_igas,
         missions.code_theme_regional,
         missions.theme_regional,
-        missions.type_de_mission,
-        missions.type_de_planification,
-        missions.modalite_de_la_mission,
+        missions.type_mission,
+        missions.type_planification,
+        missions.modalite_mission,
         missions.cd_finess,
         missions.date_reelle_visite,
         missions.date_reelle_rapport,
@@ -21,7 +21,7 @@ with all_inspections as (
         missions.saisine_juridiction_ordinale,
         missions.saisine_parquet,
         missions.autre_saisine,
-        missions.statut_de_la_mission,
+        missions.statut_mission,
 
         decisions.type_de_decision,
         decisions.complement,
@@ -43,20 +43,20 @@ with all_inspections as (
     from {{ ref('staging__helios_siicea_missions') }} as missions
 
     left join {{ ref('staging__sa_siicea_decisions') }} as decisions
-        on missions.identifiant_de_la_mission = decisions.identifiant_de_la_mission
+        on missions.identifiant_mission = decisions.identifiant_de_la_mission
 
     where missions.cd_finess != ''
 )
 
 select distinct
-    identifiant_de_la_mission,
+    identifiant_mission,
     code_theme_igas,
     theme_igas,
     code_theme_regional,
     theme_regional,
-    type_de_mission,
-    type_de_planification,
-    modalite_de_la_mission,
+    type_mission,
+    type_planification,
+    modalite_mission,
     cd_finess,
     substr(date_reelle_visite, 1, 10) as date_reelle_visite,
     substr(date_reelle_rapport, 1, 10) as date_reelle_rapport,
@@ -69,6 +69,6 @@ select distinct
     saisine_juridiction_ordinale,
     saisine_parquet,
     autre_saisine,
-    statut_de_la_mission
+    statut_mission
 
 from all_inspections

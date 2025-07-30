@@ -5,6 +5,19 @@ Helios:
   create_table_directory: "output_sql/helios/"
   remote_directory_input: "/HELIOS_TEST/"
   remote_directory_output: "/HELIOS_TEST/"
+  files_to_download:
+    - path: "/SCN_BDD/SIICEA"
+      keyword: "DECISIONS_SCN"
+      file: "sa_siicea_decisions.csv"
+    - path: "/SCN_BDD/SIREC"
+      keyword: "sirec"
+      file: "sa_sirec.csv"
+    - path: "/SCN_BDD/SIVSS"
+      keyword: "SIVSS_SCN"
+      file: "sa_sivss.csv"
+    - path: "/SCN_BDD/SIICEA/"
+      keyword: "MISSIONSREAL"
+      file: "sa_siicea_missions_real.csv"
   input_to_download:
     staging__sa_sivss: sa_sivss
     staging__sa_sirec: sa_sirec
