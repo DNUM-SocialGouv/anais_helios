@@ -3,13 +3,13 @@ Helios:
   local_directory_output: "output/helios/"
   models_directory: "dbtHelios"
   create_table_directory: "output_sql/helios/"
-  remote_directory_input: "/SCN_BDD/HELIOS/helios_test"
+  remote_directory_input: "/HELIOS_TEST/"
   remote_directory_output: "/HELIOS_TEST/"
   input_to_download:
     staging__sa_sivss: sa_sivss
     staging__sa_sirec: sa_sirec
     staging__sa_siicea_decisions: sa_siicea_decisions
-    staging__sa_siicea_missions: sa_siicea_missions
+    staging__sa_siicea_missions_real: sa_siicea_missions_real
   files_to_upload:
     helios__missions: SIICEA/helios_missions
     helios__sirec: SIREC/helios_sirec

@@ -34,7 +34,7 @@ def main(env: Literal["local", "anais"], profile: str, profile_yml: str  = "prof
         Nom de fichier contenant les metadatas nécessaires au bon fonctionnement du projet, by default "metadata.yml"
     """
     logger = setup_logger(env, f"logs/log_{env}.log")
-    config = load_metadata_YAML(metadata_yml, profile, logger=logger)
+    config = load_metadata_YAML(metadata_yml, profile, logger, ".")
     db_config = load_metadata_YAML(profile_yml, profile, logger, ".")["outputs"][env]
 
     if profile == "Staging":
