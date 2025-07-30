@@ -1,4 +1,5 @@
 # === Packages ===
+import os
 from pathlib import Path
 import subprocess
 from typing import Literal
@@ -32,6 +33,13 @@ def run_dbt(profile: str, target: Literal["local", "anais"], project_dir: str, p
     try:
         project_path = str(Path(project_dir).resolve())
         profiles_path = str(Path(profiles_dir).resolve())
+
+        if not os.path.exists(os.path.join(project_path, "package-lock.yml")):
+            dbt_deps = subprocess.run(
+                ["dbt",
+                "deps",
+                "--project-dir", project_path
+                ])
 
         result = subprocess.run(
             ["dbt",
@@ -219,17 +227,6 @@ def local_project_pipeline(profile: str, config: dict, db_config: dict, staging_
     logger : Logger
         Fichier de log.
     """
-    # Initialisation de la config duckDB
-    ddb_staging_loader = DuckDBPipeline(
-        db_config=staging_db_config,
-        config=config,
-        logger=logger)
-
-    # Récupération des tables provenant de Staging
-    ddb_staging_loader.connect()
-    ddb_staging_loader.import_csv(config["input_to_download"])
-    ddb_staging_loader.close()
-
     # Initialisation de la config DuckDB
     ddb_loader = DuckDBPipeline(
         db_config=db_config,

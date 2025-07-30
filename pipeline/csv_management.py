@@ -177,11 +177,11 @@ class ReadCsvWithDelimiter:
             Dataframe du csv.
         """
         try:
-            if self.file_path.name == "sa_sivss.csv":
-                return self.read_csv_with_custom_delimiter("¤")
-            else:
-                return self.read_csv_resilient()
-            # return self.read_csv_resilient()
+            # if self.file_path.name == "sa_sivss.csv":
+            #     return self.read_csv_with_custom_delimiter("¤")
+            # else:
+            #     return self.read_csv_resilient()
+            return self.read_csv_resilient()
         except Exception as e:
             self.logger.error(f"❌ Lecture échouée pour {self.file_path.name} → {e}")
             return
@@ -423,6 +423,7 @@ class TableInCsv:
         output_path = os.path.join(output_folder, file_name)
         self.logger.info(f"📤 Export de '{self.table_name}' → {output_path}")
 
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
         try:
             # Exportation
             df = self.df_fetch_func(self.conn, self.table_name)
