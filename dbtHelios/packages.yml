@@ -1,4 +1,5 @@
 packages:
   - git: "https://github.com/DNUM-SocialGouv/anais_staging.git"
-    revision: "staging_package"
+    revision: "dev"
+    subdirectory: "dbtStaging"
   # - local: ../../Staging/dbtStaging

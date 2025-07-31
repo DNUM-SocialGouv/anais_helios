@@ -1,15 +1,19 @@
 with all_inspections as (
 
     select
-        missions.identifiant_mission,
+        missions.identifiant_de_la_mission,
         missions.code_theme_igas,
         missions.theme_igas,
         missions.code_theme_regional,
         missions.theme_regional,
-        missions.type_mission,
-        missions.type_planification,
-        missions.modalite_mission,
-        missions.cd_finess,
+        missions.type_de_mission,
+        missions.type_de_planification,
+        missions.modalite_de_la_mission,
+        case 
+            when length(missions.finess_geographique) = 8 then '0' || missions.finess_geographique
+            else missions.finess_geographique
+        end as cd_finess,
+
         missions.date_reelle_visite,
         missions.date_reelle_rapport,
         missions.nombre_d_ecarts,
@@ -21,7 +25,7 @@ with all_inspections as (
         missions.saisine_juridiction_ordinale,
         missions.saisine_parquet,
         missions.autre_saisine,
-        missions.statut_mission,
+        missions.statut_de_la_mission,
 
         decisions.type_de_decision,
         decisions.complement,
@@ -43,20 +47,20 @@ with all_inspections as (
     from {{ ref('staging__helios_siicea_missions') }} as missions
 
     left join {{ ref('staging__sa_siicea_decisions') }} as decisions
-        on missions.identifiant_mission = decisions.identifiant_de_la_mission
+        on missions.identifiant_de_la_mission = decisions.identifiant_de_la_mission
 
     where missions.cd_finess != ''
 )
 
 select distinct
-    identifiant_mission,
+    identifiant_de_la_mission,
     code_theme_igas,
     theme_igas,
     code_theme_regional,
     theme_regional,
-    type_mission,
-    type_planification,
-    modalite_mission,
+    type_de_mission,
+    type_de_planification,
+    modalite_de_la_mission,
     cd_finess,
     substr(date_reelle_visite, 1, 10) as date_reelle_visite,
     substr(date_reelle_rapport, 1, 10) as date_reelle_rapport,
@@ -69,6 +73,6 @@ select distinct
     saisine_juridiction_ordinale,
     saisine_parquet,
     autre_saisine,
-    statut_mission
+    statut_de_la_mission
 
 from all_inspections
