@@ -9,13 +9,13 @@ with all_inspections as (
         missions.type_de_mission,
         missions.type_de_planification,
         missions.modalite_de_la_mission,
-        case 
-            when length(missions.finess_geographique) = 8 then '0' || missions.finess_geographique
-            else missions.finess_geographique
-        end as cd_finess,
-
-        missions.date_reelle_visite,
-        missions.date_reelle_rapport,
+        missions.cd_finess,
+        SUBSTRING(missions.date_reelle_visite, 7, 4) || '-' ||
+             SUBSTRING(missions.date_reelle_visite, 4, 2) || '-' ||
+             SUBSTRING(missions.date_reelle_visite, 1, 2) AS date_reelle_visite,
+        SUBSTRING(missions.date_reelle_rapport, 7, 4) || '-' ||
+            SUBSTRING(missions.date_reelle_rapport, 4, 2) || '-' ||
+            SUBSTRING(missions.date_reelle_rapport, 1, 2) AS date_reelle_rapport,
         missions.nombre_d_ecarts,
         missions.nombre_de_remarques,
         missions.injonction,
@@ -48,31 +48,28 @@ with all_inspections as (
 
     left join {{ ref('staging__sa_siicea_decisions') }} as decisions
         on missions.identifiant_de_la_mission = decisions.identifiant_de_la_mission
-
-    where missions.cd_finess != ''
+    where cd_finess != ''
 )
-
 select distinct
-    identifiant_de_la_mission,
-    code_theme_igas,
-    theme_igas,
-    code_theme_regional,
-    theme_regional,
-    type_de_mission,
-    type_de_planification,
-    modalite_de_la_mission,
-    cd_finess,
-    substr(date_reelle_visite, 1, 10) as date_reelle_visite,
-    substr(date_reelle_rapport, 1, 10) as date_reelle_rapport,
-    nombre_d_ecarts,
-    nombre_de_remarques,
-    injonction,
-    prescription,
-    recommandation,
-    saisine_cng,
-    saisine_juridiction_ordinale,
-    saisine_parquet,
-    autre_saisine,
-    statut_de_la_mission
-
+    identifiant_de_la_mission as "Identifiant de la mission",
+    code_theme_igas as "Code thème IGAS",
+    theme_igas as "Thème IGAS",
+    code_theme_regional as "Code thème régional",
+    theme_regional as "Thème régional",
+    type_de_mission as "Type de mission",
+    type_de_planification as "Type de planification",
+    modalite_de_la_mission as "Modalité de la mission",
+    cd_finess as "Code FINESS",
+    substr(date_reelle_visite, 1, 10) as "Date réelle Visite",
+    substr(date_reelle_rapport, 1, 10) as "Date réelle Rapport",
+    nombre_d_ecarts as "Nombre d écarts",
+    nombre_de_remarques as "Nombre de remarques",
+    injonction as "Injonction",
+    prescription as "Prescription",
+    recommandation as "Recommandation",
+    saisine_cng as "Saisine CNG",
+    saisine_juridiction_ordinale as "Saisine juridiction/ordinale",
+    saisine_parquet as "Saisine parquet",
+    autre_saisine as "Autre saisine",
+    statut_de_la_mission as "Statut de la mission"
 from all_inspections
