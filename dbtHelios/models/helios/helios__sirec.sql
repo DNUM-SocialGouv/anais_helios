@@ -7,7 +7,7 @@ with base as (
         substr(date_de_reception_a_l_ars, 1, 4) as annee_de_reception,
         numero_de_la_reclamation,
         case
-            when motifs_igas_sortie is not null and trim(motifs_igas_sortie) != '' then motifs_igas_sortie
+            when motifs_igas_sortie != '' and trim(motifs_igas_sortie) != '' then motifs_igas_sortie
             else motifs_igas_entree
         end as motifs_igas,
         case
@@ -49,10 +49,9 @@ motifs_classified as (
              when motifs_igas_split like '%esthétique réglementées%' then '19'
              when motifs_igas_split like '%A renseigner%' then '155'
              when motifs_igas_split like '%COVID-19%' then '156'
-             else null end as code_motif
+             else '' end as code_motif
     from motifs_split
 ),
-
 agreg_motif as (
     select
         identifiant,
@@ -62,7 +61,7 @@ agreg_motif as (
         code_motif,
         count(distinct numero_de_la_reclamation) as nb_reclamations
     from motifs_classified
-    where code_motif is not null
+    where code_motif != ''
     group by
         identifiant,
         n_finess_rpps,
