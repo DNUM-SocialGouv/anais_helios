@@ -49,7 +49,8 @@ motifs_classified as (
              when motifs_igas_split like '%esthétique réglementées%' then '19'
              when motifs_igas_split like '%A renseigner%' then '155'
              when motifs_igas_split like '%COVID-19%' then '156'
-             else '' end as code_motif
+            --  else '' 
+             end as code_motif
     from motifs_split
 ),
 agreg_motif as (
@@ -61,7 +62,7 @@ agreg_motif as (
         code_motif,
         count(distinct numero_de_la_reclamation) as nb_reclamations
     from motifs_classified
-    where code_motif != ''
+    -- where code_motif != ''
     group by
         identifiant,
         n_finess_rpps,
