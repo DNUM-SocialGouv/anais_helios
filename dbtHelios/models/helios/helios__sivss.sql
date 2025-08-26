@@ -41,8 +41,8 @@ select
     motif_cloture
 from {{ ref('staging__helios_sivss') }}
 where
-    length(date_cloture) <= 10
+    length(date_reception) <= 10
     and (
-        date_cloture = '--'
-        or substr(date_cloture, 1, 4) in {{ dbtStaging.get_x_previous_year(x=3)}} -- A confirmer ('2022', '2023', '2024')
+        date_reception  = '--'
+        or substr(date_reception , 1, 4) in {{ dbtStaging.get_x_previous_year(x=2)}} -- A confirmer ('2022', '2023', '2024')
     )
