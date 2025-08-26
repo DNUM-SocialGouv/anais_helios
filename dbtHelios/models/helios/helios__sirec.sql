@@ -27,7 +27,7 @@ motifs_split as (
         b.statut_agreg,
         trim(motif_value) as motifs_igas_split
     from base b,
-         {{ split_string_by_pipe('motifs_igas', 'b') }}
+         {{ dbtStaging.split_string_by_pipe('motifs_igas', 'b') }}
 ),
 
 motifs_classified as (

@@ -4,7 +4,7 @@ with sirec_to_helios as (
 -- requete finale
 SELECT 
 identifiant
-, {{ iif_replacement("LENGTH(n_finess_rpps)=8", "'0' || n_finess_rpps", "n_finess_rpps") }} AS NDEG_FINESS_RPPS
+, {{ dbtStaging.iif_replacement("LENGTH(n_finess_rpps)=8", "'0' || n_finess_rpps", "n_finess_rpps") }} AS NDEG_FINESS_RPPS
 , annee_de_reception
 , ENCOURS_NB_RECLA_TOTAL
 , ENCOURS_NB_RECLA_MOTIF_10

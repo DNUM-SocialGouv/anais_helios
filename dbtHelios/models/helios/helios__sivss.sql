@@ -44,5 +44,5 @@ where
     length(date_cloture) <= 10
     and (
         date_cloture = '--'
-        or substr(date_cloture, 1, 4) in ('2022', '2023', '2024')
+        or substr(date_cloture, 1, 4) in {{ dbtStaging.get_x_previous_year(x=3)}} -- A confirmer ('2022', '2023', '2024')
     )
