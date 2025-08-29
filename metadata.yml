@@ -18,6 +18,15 @@ Helios:
     - path: "/SCN_BDD/SIICEA/"
       keyword: "MISSIONSREAL"
       file: "sa_siicea_missions_real.csv"
+  table_to_copy:
+    staging__sa_sivss: sa_sivss
+    staging__sa_sirec: sa_sirec
+    staging__sa_siicea_decisions: sa_siicea_decisions
+    staging__sa_siicea_missions_real: sa_siicea_missions_real
+    zsa_sivss: zsa_sivss
+    zsa_sirec: zsa_sirec
+    zsa_siicea_decisions: zsa_siicea_decisions
+    zsa_siicea_missions_real: zsa_siicea_missions_real
   input_to_download:
     staging__sa_sivss: sa_sivss
     staging__sa_sirec: sa_sirec
