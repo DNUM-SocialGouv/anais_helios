@@ -114,7 +114,7 @@ Il contient les variables suivantes, avec leurs valeurs entre guillement `" "` :
 
 ### 2.3 ⚙️ Fichier `metadata.yml`
 
-Le fichier `metadata.yml` contient le paramétrage relatif aux fichiers en entrée et en sortie et aux répertoires du projet helios.
+Le fichier `metadata.yml` contient le paramétrage relatif aux fichiers en entrée et en sortie et aux répertoires du projet Helios.
 
 #### Section *directory*
 
