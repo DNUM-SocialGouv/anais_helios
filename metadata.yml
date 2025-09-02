@@ -3,8 +3,8 @@ Helios:
   local_directory_output: "output/helios/"
   models_directory: "dbtHelios"
   create_table_directory: "output_sql/helios/"
-  remote_directory_input: "/HELIOS_TEST/"
-  remote_directory_output: "/HELIOS_TEST/"
+  remote_directory_input: null
+  remote_directory_output: "/SCN_BDD/HELIOS/output/"
   files_to_download:
     - path: "/SCN_BDD/SIICEA"
       keyword: "DECISIONS_SCN"
@@ -28,11 +28,11 @@ Helios:
     zsa_siicea_decisions: zsa_siicea_decisions
     zsa_siicea_missions_real: zsa_siicea_missions_real
   input_to_download:
-    staging__sa_sivss: sa_sivss
-    staging__sa_sirec: sa_sirec
-    staging__sa_siicea_decisions: sa_siicea_decisions
-    staging__sa_siicea_missions_real: sa_siicea_missions_real
+    # staging__sa_sivss: sa_sivss
+    # staging__sa_sirec: sa_sirec
+    # staging__sa_siicea_decisions: sa_siicea_decisions
+    # staging__sa_siicea_missions_real: sa_siicea_missions_real
   files_to_upload:
-    helios__missions: SIICEA/helios_missions
-    helios__sirec: SIREC/helios_sirec
-    helios__sivss: SIVSS/helios_sivss
+    helios__missions: test_helios_missions
+    helios__sirec: test_helios_sirec
+    helios__sivss: test_helios_sivss
