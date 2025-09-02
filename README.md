@@ -220,16 +220,22 @@ En effet, Helios récupère les tables d'origine nécessaires de staging à part
 #### Méthode 1:
 
 Placer la base DuckDB Staging dans le répertoire correspondant ->`data/staging/duckdb_database.duckdb`.
+
 Lors de l'exécution de la pipeline avec Helios, les tables indiquées dans la section `table_to_copy` du fichier `metadata.yml` sont copiées de Staging et collées dans Helios.
 
 
 #### Méthode 2:
 
 Si vous n'avez pas la base Staging duckDB à disposition, voici la seconde méthode.
+
 Placer les fichiers .sql CREATE TABLE des tables d'origines nécessaires dans le répertoire `output_sql/helios/`.
-Placer les fichiers .csv de données des tables d'origines nécessaires dans le répertoire `input/helios/`. Renommer les fichiers .csv pour qu'ils correspondent au nom indiqué dans la section `table_to_copy` du fichier `metadata.yml`.
+
+Placer les fichiers .csv de données des tables d'origines nécessaires dans le répertoire `input/helios/`. 
+
+Renommer les fichiers .csv pour qu'ils correspondent au nom indiqué dans la section `table_to_copy` du fichier `metadata.yml`.
 
 Lors de l'exécution de la pipeline avec Helios, les tables seront créées à partir des fichiers .sql CREATE TABLE et les données injectées via les fichiers .csv.
+
 La 1ère méthode est préférable, car plus rapide à exécuter et évite des potentielles erreurs déjà corrigées dans Staging.
 
 ---
@@ -267,10 +273,9 @@ et profile = 'Helios'
 2. Récupération des tables d'origine nécessaires à Helios à partir de la base staging.
 3. Historisation des données pour chaque table vers les tables `z<nom_de_la_table` avec indication que la date d'injection dans la colonne `date_ingestion`.
 4. Exécution de la commande `run dbt` -> Création des vues relatives au projet.
-5. Vérification de la réussite de l'injection.
-6. Export des vues Helios vers le répertoire `output/helios/`.
-7. Export des vues Helios vers le SFTP `/SCN_BDD/HELIOS/output/`.
-8. Fermeture de la connexion à la base Postgres.
+5. Export des vues Helios vers le répertoire `output/helios/`.
+6. Export des vues Helios vers le SFTP `/SCN_BDD/HELIOS/output/`.
+7. Fermeture de la connexion à la base Postgres.
 
 
 ### 3.2 Exécution de parties de la pipeline
@@ -313,6 +318,8 @@ Les autres packages utilisés resteront à la même version que précédemment, 
 Pour rappel, le package `dbtStaging` est présent dans la branche `dev` du repo anais_staging.
 
 Pour la mettre à jour dans le projet Helios, il suffit de supprimer le fichier `package-lock.yml` présent dans le répertoire `dbtHelios/`.
+
+Avec la suppression du fichier, lors de l'exécution du projet Helios, un nouveau fichier `package-lock.yml` sera créé, avec le package `dbtStaging` à jour.
 
 # Documentation et architecture du projet
 ## 1. Déployement de la documentation
