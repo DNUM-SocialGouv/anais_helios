@@ -60,8 +60,18 @@ select distinct
     type_de_planification as "Type de planification",
     modalite_de_la_mission as "Modalité de la mission",
     cd_finess as "Code FINESS",
-    substr(date_reelle_visite, 1, 10) as "Date réelle Visite",
-    substr(date_reelle_rapport, 1, 10) as "Date réelle Rapport",
+    CAST(
+        CASE 
+            WHEN date_reelle_visite = '--' THEN NULL
+            ELSE 
+                substr(date_reelle_visite, 1, 10)
+        END AS DATE) AS "Date réelle Visite",
+    CAST(
+        CASE 
+            WHEN date_reelle_rapport = '--' THEN NULL
+            ELSE 
+                substr(date_reelle_rapport, 1, 10)
+        END AS DATE) AS "Date réelle Rapport",
     nombre_d_ecarts as "Nombre d écarts",
     nombre_de_remarques as "Nombre de remarques",
     injonction as "Injonction",

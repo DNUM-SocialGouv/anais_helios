@@ -5,13 +5,467 @@ models:
     description:
       Modèle fusionnant les missions SIICEA et les décisions associées,
       en utilisant les modèles de staging centralisés.
+    columns:
+      - name: 'Identifiant de la mission'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'Code thème IGAS'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'Thème IGAS'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'Code thème régional'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'Thème régional'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'Type de mission'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'Type de planification'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'Modalité de la mission'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'Code FINESS'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'Date réelle Visite'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: DATE
+          - dbtStaging.expect_column_date_format:
+              expected_format: 'YYYY-MM-DD'
+      - name: 'Date réelle Rapport'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: DATE
+          - dbtStaging.expect_column_date_format:
+              expected_format: 'YYYY-MM-DD'
+      - name: 'Nombre d écarts'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'Nombre de remarques'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'Injonction'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'Prescription'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'Recommandation'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'Saisine CNG'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'Saisine juridiction/ordinale'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'Saisine parquet'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'Autre saisine'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'Statut de la mission'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+          
 
   - name: helios__sirec
     description:
       Modèle d'agrégation des réclamations SIREC par année, statut ('en cours' / 'clot')
       et par motifs IGAS.
+    columns:
+      - name: 'IDENTIFIANT'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'NDEG_FINESS_RPPS'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'ANNEE_DE_RECEPTION'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_TOTAL'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_10'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_11'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_12'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_13'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_14'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_15'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_16'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_17'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_18'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_19'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_155'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'ENCOURS_NB_RECLA_MOTIF_156'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_TOTAL'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_10'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_11'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_12'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_13'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_14'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_15'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_16'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_17'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_18'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_19'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_155'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
+      - name: 'CLOT_NB_RECLA_MOTIF_156'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: INTEGER
 
   - name: helios__sivss
     description:
       Modèle filtrant les signalements issus de SIVSS pour ne conserver
       que ceux clôturés entre 2022 et 2024 ou sans date de clôture explicite.
+    columns:
+      - name: 'STRUCTURE_INTITULE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'NUMERO_SIVSS'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DATE_RECEPTION'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: DATE
+          - dbtStaging.expect_column_date_format:
+              expected_format: 'YYYY-MM-DD'
+      - name: 'FAMILLE_PRINCIPALE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'NATURE_PRINCIPALE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'AUTRE_SIGNAL_LIBELLE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'FAMILLE_SECONDAIRE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'NATURE_SECONDAIRE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'AUTRE_SIGNAL_SECONDAIRE_LIBELLE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'EST_EIGS'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: BOOLEAN
+          - dbtStaging.expect_column_bool_format
+      - name: 'CONSEQUENCES_PERSONNE_EXPOSEE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'RECLAMATION'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: BOOLEAN
+          - dbtStaging.expect_column_bool_format
+      - name: 'DECLARANT_EST_ANONYME'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DECLARANT_QUALITE_FONCTION'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DECLARANT_CATEGORIE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DECLARANT_ORGANISME_TYPE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DECLARANT_ETABLISSEMENT_TYPE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DECLARANT_ORGANISME_NUMERO_FINESS'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DECLARANT_ORGANISME_NOM'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DECLARANT_ORGANISME_REGION'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DECLARANT_ORGANISME_DEPARTEMENT'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DECLARANT_ORGANISME_CODE_POSTAL'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DECLARANT_ORGANISME_COMMUNE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DECLARANT_ORGANISME_CODE_INSEE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'SURVENUE_CAS_COLLECTIVITE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'SCC_ORGANISME_TYPE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'SCC_ETABLISSEMENT_TYPE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'SCC_ORGANISME_NOM'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'SCC_ORGANISME_FINESS'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'SCC_ORGANISME_REGION'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'SCC_ORGANISME_DEPARTEMENT'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'SCC_ORGANISME_CODE_POSTAL'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'SCC_ORGANISME_COMMUNE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'SCC_ORGANISME_CODE_INSEE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'ETAT'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'SUPPORT_SIGNALEMENT'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
+      - name: 'DATE_CLOTURE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: DATE
+          - dbtStaging.expect_column_date_format:
+              expected_format: 'YYYY-MM-DD'
+      - name: 'MOTIF_CLOTURE'
+        tests:
+          - dbtStaging.expect_column_to_exist
+          - dbtStaging.expect_type_for_column:
+              expected_type: VARCHAR
