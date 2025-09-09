@@ -341,7 +341,7 @@ models:
         tests:
           - dbtStaging.expect_column_to_exist
           - dbtStaging.expect_type_for_column:
-              expected_type: VARCHAR
+              expected_type: BOOLEAN
       - name: 'DECLARANT_QUALITE_FONCTION'
         tests:
           - dbtStaging.expect_column_to_exist
@@ -401,7 +401,7 @@ models:
         tests:
           - dbtStaging.expect_column_to_exist
           - dbtStaging.expect_type_for_column:
-              expected_type: VARCHAR
+              expected_type: BOOLEAN
       - name: 'SCC_ORGANISME_TYPE'
         tests:
           - dbtStaging.expect_column_to_exist
