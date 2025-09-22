@@ -1,0 +1,18 @@
+version: 2
+
+# Sources pour DuckDB
+sources:
+  - name: main
+    tables:
+      - name: sa_sivss
+      - name: sa_sirec
+      - name: sa_siicea_decisions
+      - name: sa_siicea_missions
+
+# Sources pour PostgreSQL
+  - name: public
+    tables:
+      - name: sa_sivss
+      - name: sa_sirec
+      - name: sa_siicea_decisions
+      - name: sa_siicea_missions
