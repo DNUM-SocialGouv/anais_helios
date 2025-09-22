@@ -241,7 +241,7 @@ La 1ère méthode est préférable, car plus rapide à exécuter et évite des p
 ---
 ## 3. Lancement du pipeline :
 
-La Pipeline exécutée est celle du package `anais_pipeline` dans la branche du même nom du repo anais_staging. Elle est importée comme un package dans le `pyproject.toml`. L'ensemble de la Pipeline est exécutée depuis le `main.py`
+La Pipeline exécutée est celle du package `anais_pipeline` dans la branche `main` du repo `anais_pipeline`. Elle est importée comme un package dans le `pyproject.toml`. L'ensemble de la Pipeline est exécutée depuis le `main.py`.
 
 ### 3.1 Exécution de la pipeline pour Helios:
 
@@ -301,7 +301,7 @@ Dans le cas où les packages ont été modifiés, et vous souhaitez les appliqu�
 
 #### 4.1 Pipeline
 
-Pour rappel, le package `anais_pipeline` de la pipeline est présent dans la branche du même nom du repo anais_staging.
+Pour rappel, le package `anais_pipeline` de la pipeline est présent dans la branche `main` du repo `anais_pipeline`.
 
 Pour la mettre à jour dans le projet Helios, il suffit de supprimer le fichier `uv.lock` à la racine du projet.
 
