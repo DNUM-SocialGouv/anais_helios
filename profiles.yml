@@ -12,7 +12,8 @@ Staging:
       dbname: staging
     local:
       type: duckdb
-      path: data/staging/duckdb_database.duckdb
+      #path: data/staging/duckdb_database.duckdb #original version
+      path: ../anais_staging/data/staging/duckdb_database.duckdb  # Relative path to staging project
       schema: main
 
 # DNUM - Layer CertDC (dépend de la base de Staging)

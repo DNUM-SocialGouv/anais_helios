@@ -31,7 +31,7 @@ with all_inspections as (
         decisions.complement,
         decisions.theme_decision,
         decisions.sous_theme_decision,
-        decisions.nombre,
+        decisions.nombre_de_decisions,
         decisions.statut_de_decision,
         case 
             when length(decisions.finess_geographique) = 8 then '0' || decisions.finess_geographique
