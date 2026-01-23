@@ -52,9 +52,5 @@ select
     ) AS "DATE_CLOTURE",
     motif_cloture as "MOTIF_CLOTURE"
 from {{ ref('staging__helios_sivss') }}
-where
-    length(date_reception) <= 10
-    and (
-        date_reception  = '--'
-        or substr(date_reception , 1, 4) in {{ dbtStaging.get_x_previous_year(x=3)}} -- A confirmer ('2022', '2023', '2024')
-    )
+-- Date filtering already applied in staging__helios_sivss (get_last_completed_quarter)
+-- No additional filtering needed here

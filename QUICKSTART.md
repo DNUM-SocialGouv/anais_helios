@@ -76,11 +76,13 @@ The pipeline creates 3 analytical views:
 
 | View Name | Output File | Description |
 |-----------|-------------|-------------|
-| `helios__missions` | `test_helios_missions_YYYY_MM_DD.csv` | Inspection mission analytics |
-| `helios__sirec` | `test_helios_sirec_YYYY_MM_DD.csv` | SIREC transformations |
-| `helios__sivss` | `test_helios_sivss_YYYY_MM_DD.csv` | SIVSS transformations |
+| `helios__missions` | `siicea_YYYYMMDD.csv` | Inspection mission analytics |
+| `helios__sirec` | `sirec_YYYYMMDD.csv` | SIREC transformations |
+| `helios__sivss` | `sivss_YYYYMMDD.csv` | SIVSS transformations |
 
-Files are named with today's date (e.g., `test_helios_missions_2024_10_26.csv`)
+**Dynamic filename generation:** Output filenames are based on the dates extracted from input files. For example, if the input `sa_sivss.csv` was named `SIVSS_SCN_20251007.csv` on SFTP, the output will be `sivss_20251007.csv`.
+
+If no input date is found, the current date is used as fallback (e.g., `sivss_20250123.csv`).
 
 ## Pipeline Flow
 
@@ -111,13 +113,13 @@ SFTP Server
 # List exported files
 ls -lh output/helios/
 
-# Expected files:
-# test_helios_missions_2024_10_26.csv
-# test_helios_sirec_2024_10_26.csv
-# test_helios_sivss_2024_10_26.csv
+# Expected files (dates from input files):
+# siicea_20251020.csv
+# sirec_20251026.csv
+# sivss_20251007.csv
 
 # Preview content
-head -10 output/helios/test_helios_missions_*.csv
+head -10 output/helios/siicea_*.csv
 ```
 
 ### Query Database
@@ -147,8 +149,8 @@ sftp -i ~/.ssh/id_rsa username@sftp.host
 # Navigate to output directory
 cd /SCN_BDD/HELIOS/output
 
-# List uploaded files
-ls -lt test_helios_*
+# List uploaded files (named from input file dates)
+ls -lt sivss_*.csv sirec_*.csv siicea_*.csv
 
 # Exit
 exit
@@ -195,7 +197,7 @@ cat logs/log_local_sftp.log | grep SFTP
 ### Empty Output Directory
 
 ```
-⚠️ Fichier introuvable: output/helios/test_helios_missions_*.csv
+⚠️ Fichier introuvable: output/helios/siicea_*.csv
 ```
 
 **Solution:**
@@ -287,12 +289,14 @@ Helios:
     staging__sa_siicea_decisions: sa_siicea_decisions
     staging__sa_siicea_missions_real: sa_siicea_missions_real
 
-  # Views to export/upload
+  # Views to export/upload (base names, dates are added dynamically)
   files_to_upload:
-    helios__missions: test_helios_missions
-    helios__sirec: test_helios_sirec
-    helios__sivss: test_helios_sivss
+    helios__missions: siicea      # Output: siicea_YYYYMMDD.csv
+    helios__sirec: sirec          # Output: sirec_YYYYMMDD.csv
+    helios__sivss: sivss          # Output: sivss_YYYYMMDD.csv
 ```
+
+**Note:** Output filenames use dates extracted from input files (via `input_files_date` table in Staging database), not today's date.
 
 ### profiles.yml
 

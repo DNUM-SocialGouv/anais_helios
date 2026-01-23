@@ -249,22 +249,31 @@ La Pipeline exécutée est celle du package `anais_pipeline` dans la branche `ma
 # Se placer dans anais_helios
 cd anais_helios
 
-#  Lancer le `main.py`
-uv run -m pipeline.main --env "local" --profile "Helios"
+# Option 1: Sans SFTP (export local uniquement)
+uv run run_local_with_sftp.py --env "local" --profile "Helios"
+
+# Option 2: Avec SFTP (upload automatique vers SFTP)
+uv run run_local_with_sftp.py --env "local" --profile "Helios" --use-sftp
 ```
-Avec env = 'local' ou 'anais' selon votre environnement de travail
+Avec env = 'local' (DuckDB local)
 et profile = 'Helios'
+
+> **Note:** Le script `run_local_with_sftp.py` remplace l'ancien `pipeline.main` et génère automatiquement les noms de fichiers de sortie basés sur les dates des fichiers d'entrée.
 
 #### Pipeline Helios sur env 'local':
 1. Création de la base DuckDB si inexistante.
 2. Connexion à la base DuckDB.
-3. Méthode 1 : Récupération des tables d'origine nécessaires à Helios à partir de la base staging. 
+3. Méthode 1 : Récupération des tables d'origine nécessaires à Helios à partir de la base staging.
 3. Méthode 2 : Création des tables d'origine nécessaires à Helios à partir des fichiers CREATE TABLE .sql (`output_sql/helios/`) -> injection des données dans les tables à partir des fichiers de données .csv (`input/helios/`).
 4. Historisation des données pour chaque table vers les tables `z<nom_de_la_table` avec indication que la date d'injection dans la colonne `date_ingestion`.
 5. Vérification de la réussite de l'injection.
-7. Fermeture de la connexion à la base DuckDB.
-8. Exécution de la commande `run dbt` -> Création des vues relatives au projet.
-9. Export des vues Helios vers le répertoire `output/helios/`.
+6. Exécution de la commande `run dbt` -> Création des vues relatives au projet.
+7. **Génération des noms de fichiers** : Les dates des fichiers d'entrée sont récupérées depuis la table `input_files_date` de Staging.
+8. Export des vues Helios vers le répertoire `output/helios/` avec les noms suivants:
+   - `sivss_YYYYMMDD.csv` (date du fichier SIVSS d'origine)
+   - `sirec_YYYYMMDD.csv` (date du fichier SIREC d'origine)
+   - `siicea_YYYYMMDD.csv` (date du fichier SIICEA d'origine)
+9. (Optionnel) Upload des fichiers vers SFTP si `--use-sftp` est activé.
 
 
 #### Pipeline Helios sur env 'anais':
@@ -374,6 +383,9 @@ En cours
 ├── metadata.yml
 ├── pyproject.toml
 ├── README.md
+├── QUICKSTART.md
+├── run_local_with_sftp.py        # Script principal avec support SFTP
+├── output_filename_generator.py  # Génère les noms de fichiers de sortie
 └── uv.lock
 ```
 

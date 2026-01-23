@@ -31,6 +31,9 @@ from pipeline.utils.sftp_sync import SFTPSync
 from pipeline.database_management.duckdb_pipeline import DuckDBPipeline
 from pipeline.utils.dbt_tools import dbt_exec
 
+# === Output Filename Generation ===
+from output_filename_generator import OutputFilenameGenerator
+
 # === Constants ===
 ENV_CHOICE = ["local"]  # Only local environment supported
 PROFILE_CHOICE = ["Helios", "CertDC", "InspectionControlePA", "InspectionControlePH", "MatricePreciblage"]
@@ -238,16 +241,37 @@ def local_helios_pipeline_with_sftp(
         logger.info("✅ DBT transformations complete")
         logger.info("")
 
-        # Step 4: Export views as CSV files
+        # Step 4: Export views as CSV files with custom filenames from input dates
         logger.info("=" * 80)
         logger.info("📤 STEP 4: Exporting views to CSV files...")
         logger.info("=" * 80)
 
+        # Generate output filenames based on input file dates
+        filename_generator = OutputFilenameGenerator(staging_db_config["path"], logger)
+        custom_filenames = filename_generator.generate_filenames()
+
+        # Export CSVs with custom filenames
         ddb_loader.connect()
-        ddb_loader.export_csv(config["files_to_upload"], date=today)
+
+        for view_name in config["files_to_upload"].keys():
+            if view_name in custom_filenames:
+                custom_filename = custom_filenames[view_name]
+                output_path = os.path.join(config["local_directory_output"], custom_filename)
+
+                try:
+                    # Export view to CSV with custom filename
+                    ddb_loader.conn.execute(f"""
+                        COPY (SELECT * FROM {view_name})
+                        TO '{output_path}'
+                        WITH (HEADER TRUE, DELIMITER ';')
+                    """)
+                    logger.info(f"✅ Exported: {view_name} → {custom_filename}")
+                except Exception as e:
+                    logger.error(f"❌ Failed to export {view_name}: {e}")
+
         ddb_loader.close()
 
-        logger.info(f"✅ Exported {len(config['files_to_upload'])} CSV files to {config['local_directory_output']}")
+        logger.info(f"✅ Exported {len(custom_filenames)} CSV files to {config['local_directory_output']}")
         logger.info("")
 
         # Step 5: SFTP Upload (optional)
