@@ -33,6 +33,9 @@ Helios:
     # staging__sa_siicea_decisions: sa_siicea_decisions
     # staging__sa_siicea_missions_real: sa_siicea_missions_real
   files_to_upload:
-    helios__missions: test_helios_missions
-    helios__sirec: test_helios_sirec
-    helios__sivss: test_helios_sivss
+    helios__missions:
+      remote_dir: /HELIOS/SIICEA
+    helios__sirec:
+      remote_dir: /HELIOS/SIREC
+    helios__sivss:
+      remote_dir: /HELIOS/SIVSS

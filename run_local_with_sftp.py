@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #!/usr/bin/env python3
 """
 Local Helios Pipeline with SFTP Upload Support
@@ -120,7 +122,7 @@ class SFTPSyncWithKey(SFTPSync):
                     )
                     self.transport.connect(username=self.username, pkey=private_key)
                     self.sftp = SFTPClient.from_transport(self.transport)
-                    self.logger.info("✅ SFTP connection established with private key")
+                    self.logger.info(" SFTP connection established with private key")
                     return
                 except Exception as e:
                     self.logger.error(f"Private key authentication failed: {e}")
@@ -131,7 +133,7 @@ class SFTPSyncWithKey(SFTPSync):
                 self.logger.info("Connecting with password authentication...")
                 self.transport.connect(username=self.username, password=self.password)
                 self.sftp = SFTPClient.from_transport(self.transport)
-                self.logger.info("✅ SFTP connection established with password")
+                self.logger.info(" SFTP connection established with password")
 
             else:
                 raise ValueError(
@@ -140,7 +142,7 @@ class SFTPSyncWithKey(SFTPSync):
                 )
 
         except Exception as e:
-            self.logger.error(f"❌ SFTP connection failed: {e}")
+            self.logger.error(f"â SFTP connection failed: {e}")
             raise
 
 
@@ -151,7 +153,8 @@ def local_helios_pipeline_with_sftp(
     staging_db_config: dict,
     today: str,
     logger: Logger,
-    use_sftp: bool = False
+    use_sftp: bool = False,
+    dry_run_upload: bool = False
 ):
     """
     Pipeline for Helios in local environment with optional SFTP upload.
@@ -182,7 +185,7 @@ def local_helios_pipeline_with_sftp(
     """
     # Step 1: Initialize DuckDB loader
     logger.info("=" * 80)
-    logger.info("🦆 STEP 1: Initializing DuckDB Helios connection...")
+    logger.info("STEP 1: Initializing DuckDB Helios connection...")
     logger.info("=" * 80)
 
     ddb_loader = DuckDBPipeline(
@@ -194,7 +197,7 @@ def local_helios_pipeline_with_sftp(
 
     # Step 2: Copy tables from Staging database
     logger.info("=" * 80)
-    logger.info("📊 STEP 2: Copying tables from Staging database...")
+    logger.info("STEP 2: Copying tables from Staging database...")
     logger.info("=" * 80)
 
     ddb_loader.connect()
@@ -205,17 +208,17 @@ def local_helios_pipeline_with_sftp(
             logger.info(f"Found Staging database: {staging_db_config['path']}")
             logger.info(f"Copying {len(config['table_to_copy'])} tables...")
             ddb_loader.copy_table(config["table_to_copy"])
-            logger.info("✅ Tables copied successfully")
+            logger.info("Tables copied successfully")
             logger.info("")
 
         elif os.listdir(config["local_directory_input"]) and os.listdir(config["create_table_directory"]):
             logger.info("Staging database not found, loading from CSV files...")
             ddb_loader.run()
-            logger.info("✅ Data loaded from CSV files")
+            logger.info("Data loaded from CSV files")
             logger.info("")
         else:
             logger.error(
-                "❌ Cannot populate Helios DuckDB database.\n"
+                "Cannot populate Helios DuckDB database.\n"
                 f"- Staging DuckDB not found at: {staging_db_config['path']}\n"
                 f"- OR empty directories:\n"
                 f"    > CSV files: {config['local_directory_input']}\n"
@@ -229,7 +232,7 @@ def local_helios_pipeline_with_sftp(
     # Step 3: Run DBT transformations (if database is not empty)
     if not duckdb_empty:
         logger.info("=" * 80)
-        logger.info("🔄 STEP 3: Running DBT transformations...")
+        logger.info("STEP 3: Running DBT transformations...")
         logger.info("=" * 80)
 
         # Create views
@@ -238,12 +241,12 @@ def local_helios_pipeline_with_sftp(
         # Run tests
         dbt_exec("test", profile, "local", config["models_directory"], ".", logger)
 
-        logger.info("✅ DBT transformations complete")
+        logger.info("DBT transformations complete")
         logger.info("")
 
         # Step 4: Export views as CSV files with custom filenames from input dates
         logger.info("=" * 80)
-        logger.info("📤 STEP 4: Exporting views to CSV files...")
+        logger.info("STEP 4: Exporting views to CSV files...")
         logger.info("=" * 80)
 
         # Generate output filenames based on input file dates
@@ -265,33 +268,39 @@ def local_helios_pipeline_with_sftp(
                         TO '{output_path}'
                         WITH (HEADER TRUE, DELIMITER ';')
                     """)
-                    logger.info(f"✅ Exported: {view_name} → {custom_filename}")
+                    logger.info(f" Exported: {view_name} â {custom_filename}")
                 except Exception as e:
-                    logger.error(f"❌ Failed to export {view_name}: {e}")
+                    logger.error(f"â Failed to export {view_name}: {e}")
 
         ddb_loader.close()
 
-        logger.info(f"✅ Exported {len(custom_filenames)} CSV files to {config['local_directory_output']}")
+        logger.info(f" Exported {len(custom_filenames)} CSV files to {config['local_directory_output']}")
         logger.info("")
 
         # Step 5: SFTP Upload (optional)
         if use_sftp:
             logger.info("=" * 80)
-            logger.info("📤 STEP 5: Uploading files to SFTP...")
-            logger.info("=" * 80)
+            if dry_run_upload:
+                logger.info("STEP 5: Simulating SFTP upload (no files will be deposited)...")
+            else:
+                logger.info("STEP 5: Uploading files to SFTP...")
+                logger.info("=" * 80)
 
             try:
                 sftp = SFTPSyncWithKey(config["local_directory_output"], logger)
                 sftp.upload_file_to_sftp(
-                    config["files_to_upload"],
-                    config["local_directory_output"],
-                    config["remote_directory_output"],
-                    date=today
+                    views_to_export=config["files_to_upload"],
+                    generated_filenames=custom_filenames,
+                    output_dir=config["local_directory_output"],
+                    dry_run=dry_run_upload,
                 )
-                logger.info("✅ SFTP upload complete!")
+                if dry_run_upload:
+                    logger.info("?? SFTP dry-run complete: no files were deposited.")
+                else:
+                    logger.info("? SFTP upload complete!")
                 logger.info("")
             except Exception as e:
-                logger.error(f"❌ SFTP upload failed: {e}")
+                logger.error(f"SFTP upload failed: {e}")
                 logger.error("Make sure .env file contains SFTP credentials:")
                 logger.error("  Required: SFTP_HOST, SFTP_PORT, SFTP_USERNAME")
                 logger.error("  Authentication: SFTP_PRIVATE_KEY_PATH or SFTP_PASSWORD")
@@ -299,23 +308,21 @@ def local_helios_pipeline_with_sftp(
                 raise
         else:
             logger.info("=" * 80)
-            logger.info("📂 STEP 5: SFTP upload skipped (files saved locally)")
+            logger.info("STEP 5: SFTP upload skipped (files saved locally)")
             logger.info("=" * 80)
             logger.info(f"Output files available in: {config['local_directory_output']}")
             logger.info("")
 
         # Final summary
         logger.info("=" * 80)
-        logger.info("✅ Pipeline completed successfully!")
+        logger.info("Pipeline completed successfully!")
         logger.info("=" * 80)
         logger.info(f"Database: {db_config['path']}")
         logger.info(f"Output: {config['local_directory_output']}")
-        if use_sftp:
-            logger.info(f"SFTP: Uploaded to {config['remote_directory_output']}")
         logger.info("")
 
     else:
-        logger.error(f"❌ Database {db_config['path']} is empty")
+        logger.error(f"Database {db_config['path']} is empty")
         raise RuntimeError("Helios DuckDB database is empty after loading")
 
 
@@ -342,7 +349,14 @@ def main():
         action="store_true",
         help="Upload output files to SFTP after export (requires .env with SFTP credentials)"
     )
+    parser.add_argument(
+        "--dry-run-upload",
+        action="store_true",
+        help="Simule l'upload SFTP final sans déposer les fichiers"
+    )
     args = parser.parse_args()
+    if args.dry_run_upload and not args.use_sftp:
+        parser.error("--dry-run-upload requires --use-sftp")
 
     # Setup configuration
     logger = setup_logger(args.env, f"logs/log_{args.env}_sftp.log")
@@ -353,11 +367,18 @@ def main():
 
     # Print execution info
     logger.info("=" * 80)
-    logger.info("🚀 LOCAL HELIOS PIPELINE WITH SFTP SUPPORT")
+    logger.info("LOCAL HELIOS PIPELINE WITH SFTP SUPPORT")
     logger.info("=" * 80)
     logger.info(f"Environment: {args.env}")
     logger.info(f"Profile: {args.profile}")
-    logger.info(f"SFTP Upload: {'✅ Enabled' if args.use_sftp else '❌ Disabled (local export only)'}")
+    if args.use_sftp and args.dry_run_upload:
+        sftp_status = "Enabled (dry-run, no upload)"
+    elif args.use_sftp:
+        sftp_status = "Enabled"
+    else:
+        sftp_status = "Disabled (local export only)"
+
+    logger.info(f"SFTP Upload: {sftp_status}")
     logger.info(f"Database: {db_config['path']}")
     logger.info(f"Date: {today}")
     logger.info("")
@@ -370,7 +391,8 @@ def main():
         staging_db_config=staging_db_config,
         today=today,
         logger=logger,
-        use_sftp=args.use_sftp
+        use_sftp=args.use_sftp,
+        dry_run_upload=args.dry_run_upload
     )
 
 
