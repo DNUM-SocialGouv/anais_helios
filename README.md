@@ -342,10 +342,7 @@ Exemple (exécution tous les jours à 06h00) :
 ```bash
 chmod +x ~/bin/run_anais_daily.sh
 ```
-0 6 * * * /home/user/bin/run_anais_daily.sh >> /home/user/logs/run_anais_daily.log 2>&1
-
-#### Mise en place du cron
-
+0 6 * * * /home/user/bin/run_anais_daily.sh >> /home/user/logs/run_anais_daily.log 2>&1  
 
 ### 4. Mettre à jour les packages Staging
 
