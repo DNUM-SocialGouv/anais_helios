@@ -304,6 +304,49 @@ Pour seulement exécuter le dbt run afin de tester le fonctionnement des modèle
 uv run -m pipeline.utils.dbt_tools --env "local" --profile "Helios"
 ```
 
+### 3.3 Exécution automatique via cron (VM Linux)
+
+En production la pipeline complète est exécutée automatiquement via un cron.  
+
+Pour lancer le script : 
+```bash
+~/bin/run_anais_daily.sh
+```
+
+Ce script orchestre toute la pipeline :
+
+1. nettoyage des fichiers temporaires  
+2. téléchargement des fichiers depuis le SFTP  
+3. déchiffrement des fichiers .gpg  
+4. exécution de la pipeline Staging  
+5. exécution de la pipeline Helios  
+6. génération des fichiers CSV  
+7. dépôt sur le SFTP  
+
+#### Pré-requis : 
+
+Avant mise en place du cron :  
+
+1. Placer run_anais_daily.sh et le dossier "scripts" à la racine du dossier où sont présents les dossiers anais_helios et anais_staging   
+2. Rendre le script exécutable de la manière suivante :  
+```bash
+chmod +x ~/bin/run_anais_daily.sh
+```
+
+Éditer la crontab :  
+```bash
+crontab -e
+```
+
+Exemple (exécution tous les jours à 06h00) :  
+```bash
+chmod +x ~/bin/run_anais_daily.sh
+```
+0 6 * * * /home/user/bin/run_anais_daily.sh >> /home/user/logs/run_anais_daily.log 2>&1
+
+#### Mise en place du cron
+
+
 ### 4. Mettre à jour les packages Staging
 
 Dans le cas où les packages ont été modifiés, et vous souhaitez les appliquées à Helios, voici la manupilation à faire.
