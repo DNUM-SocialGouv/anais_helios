@@ -101,9 +101,9 @@ cd "$HELIOS_DIR"
 export PATH="$HOME/.local/bin:$PATH"
 run_with_retry uv run run_local_with_sftp.py --env local --profile Helios --use-sftp
 
-if [ $? -ne 0 ]; then
-  echo " Pipeline failed" | mail -s "ANALYSE PIPELINE FAILED" houdetitouan@seenovate.com
-fi
+# if [ $? -ne 0 ]; then
+#   echo " Pipeline failed" | mail -s "ANALYSE PIPELINE FAILED" mail@mail.com
+# fi
 
 echo "============================================================"
 echo "$(date '+%Y-%m-%d %H:%M:%S') END anais pipeline SUCCESS"
