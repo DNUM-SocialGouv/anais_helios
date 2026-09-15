@@ -6,11 +6,12 @@ Queries input file dates from Staging database and generates output filenames
 with embedded dates from source files.
 """
 
-import duckdb
-from datetime import datetime, date
-from typing import Dict, Optional
 import logging
 import os
+from datetime import date, datetime
+from typing import Dict, Optional
+
+import duckdb
 
 logger = logging.getLogger(__name__)
 

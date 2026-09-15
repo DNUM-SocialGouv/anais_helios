@@ -19,16 +19,17 @@ Usage:
 # === Packages ===
 import argparse
 import os
-from logging import Logger
-from dotenv import load_dotenv
-from paramiko import Transport, SFTPClient, RSAKey, Ed25519Key, ECDSAKey
-from typing import Optional
 from datetime import date
+from logging import Logger
+from typing import Optional
+
+from dotenv import load_dotenv
+from paramiko import ECDSAKey, Ed25519Key, RSAKey, SFTPClient, Transport
 
 # === Modules ===
 from pipeline.database_management.duckdb_pipeline import DuckDBPipeline
-from pipeline.utils.dbt_tools import dbt_exec
 from pipeline.utils.config import setup_config
+from pipeline.utils.dbt_tools import dbt_exec
 from pipeline.utils.load_yml import load_metadata_YAML
 from pipeline.utils.logging_management import setup_logger
 from pipeline.utils.sftp_sync import SFTPSync
