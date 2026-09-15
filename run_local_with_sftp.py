@@ -19,26 +19,33 @@ Usage:
 # === Packages ===
 import argparse
 import os
-from logging import Logger
-from dotenv import load_dotenv
-from paramiko import Transport, SFTPClient, RSAKey, Ed25519Key, ECDSAKey
-from typing import Optional
 from datetime import date
+from logging import Logger
+from typing import Optional
+
+from dotenv import load_dotenv
+from paramiko import ECDSAKey, Ed25519Key, RSAKey, SFTPClient, Transport
 
 # === Modules ===
+from pipeline.database_management.duckdb_pipeline import DuckDBPipeline
 from pipeline.utils.config import setup_config
+from pipeline.utils.dbt_tools import dbt_exec
 from pipeline.utils.load_yml import load_metadata_YAML
 from pipeline.utils.logging_management import setup_logger
 from pipeline.utils.sftp_sync import SFTPSync
-from pipeline.database_management.duckdb_pipeline import DuckDBPipeline
-from pipeline.utils.dbt_tools import dbt_exec
 
 # === Output Filename Generation ===
 from output_filename_generator import OutputFilenameGenerator
 
 # === Constants ===
 ENV_CHOICE = ["local"]  # Only local environment supported
-PROFILE_CHOICE = ["Helios", "CertDC", "InspectionControlePA", "InspectionControlePH", "MatricePreciblage"]
+PROFILE_CHOICE = [
+    "Helios",
+    "CertDC",
+    "InspectionControlePA",
+    "InspectionControlePH",
+    "MatricePreciblage",
+]
 METADATA_YML = "metadata.yml"
 PROFILE_YML = "profiles.yml"
 
@@ -90,16 +97,22 @@ class SFTPSyncWithKey(SFTPSync):
 
         for key_class, key_name in key_types:
             try:
-                self.logger.info(f"Trying to load {key_name} private key from {key_path}")
+                self.logger.info(
+                    f"Trying to load {key_name} private key from {key_path}"
+                )
                 if passphrase:
-                    return key_class.from_private_key_file(key_path, password=passphrase)
+                    return key_class.from_private_key_file(
+                        key_path, password=passphrase
+                    )
                 else:
                     return key_class.from_private_key_file(key_path)
             except Exception as e:
                 self.logger.debug(f"Failed to load as {key_name}: {e}")
                 continue
 
-        raise ValueError(f"Could not load private key from {key_path}. Tried RSA, Ed25519, and ECDSA formats.")
+        raise ValueError(
+            f"Could not load private key from {key_path}. Tried RSA, Ed25519, and ECDSA formats."
+        )
 
     def connect(self):
         """
@@ -117,8 +130,7 @@ class SFTPSyncWithKey(SFTPSync):
                 self.logger.info("Connecting with private key authentication...")
                 try:
                     private_key = self._load_private_key(
-                        self.private_key_path,
-                        self.private_key_passphrase
+                        self.private_key_path, self.private_key_passphrase
                     )
                     self.transport.connect(username=self.username, pkey=private_key)
                     self.sftp = SFTPClient.from_transport(self.transport)
@@ -154,7 +166,7 @@ def local_helios_pipeline_with_sftp(
     today: str,
     logger: Logger,
     use_sftp: bool = False,
-    dry_run_upload: bool = False
+    dry_run_upload: bool = False,
 ):
     """
     Pipeline for Helios in local environment with optional SFTP upload.
@@ -192,7 +204,7 @@ def local_helios_pipeline_with_sftp(
         db_config=db_config,
         config=config,
         logger=logger,
-        staging_db_config=staging_db_config
+        staging_db_config=staging_db_config,
     )
 
     # Step 2: Copy tables from Staging database
@@ -211,7 +223,9 @@ def local_helios_pipeline_with_sftp(
             logger.info("Tables copied successfully")
             logger.info("")
 
-        elif os.listdir(config["local_directory_input"]) and os.listdir(config["create_table_directory"]):
+        elif os.listdir(config["local_directory_input"]) and os.listdir(
+            config["create_table_directory"]
+        ):
             logger.info("Staging database not found, loading from CSV files...")
             ddb_loader.run()
             logger.info("Data loaded from CSV files")
@@ -259,7 +273,9 @@ def local_helios_pipeline_with_sftp(
         for view_name in config["files_to_upload"].keys():
             if view_name in custom_filenames:
                 custom_filename = custom_filenames[view_name]
-                output_path = os.path.join(config["local_directory_output"], custom_filename)
+                output_path = os.path.join(
+                    config["local_directory_output"], custom_filename
+                )
 
                 try:
                     # Export view to CSV with custom filename
@@ -274,20 +290,25 @@ def local_helios_pipeline_with_sftp(
 
         ddb_loader.close()
 
-        logger.info(f" Exported {len(custom_filenames)} CSV files to {config['local_directory_output']}")
+        logger.info(
+            f" Exported {len(custom_filenames)} CSV files to {config['local_directory_output']}"
+        )
         logger.info("")
 
         # Step 5: SFTP Upload (optional)
         if use_sftp:
             logger.info("=" * 80)
             if dry_run_upload:
-                logger.info("STEP 5: Simulating SFTP upload (no files will be deposited)...")
+                logger.info(
+                    "STEP 5: Simulating SFTP upload (no files will be deposited)..."
+                )
             else:
                 logger.info("STEP 5: Uploading files to SFTP...")
                 logger.info("=" * 80)
 
             try:
                 sftp = SFTPSyncWithKey(config["local_directory_output"], logger)
+                # TODO: kwargs of the following function don't match the function definition
                 sftp.upload_file_to_sftp(
                     views_to_export=config["files_to_upload"],
                     generated_filenames=custom_filenames,
@@ -304,13 +325,17 @@ def local_helios_pipeline_with_sftp(
                 logger.error("Make sure .env file contains SFTP credentials:")
                 logger.error("  Required: SFTP_HOST, SFTP_PORT, SFTP_USERNAME")
                 logger.error("  Authentication: SFTP_PRIVATE_KEY_PATH or SFTP_PASSWORD")
-                logger.error("  Optional: SFTP_PRIVATE_KEY_PASSPHRASE (if key is encrypted)")
+                logger.error(
+                    "  Optional: SFTP_PRIVATE_KEY_PASSPHRASE (if key is encrypted)"
+                )
                 raise
         else:
             logger.info("=" * 80)
             logger.info("STEP 5: SFTP upload skipped (files saved locally)")
             logger.info("=" * 80)
-            logger.info(f"Output files available in: {config['local_directory_output']}")
+            logger.info(
+                f"Output files available in: {config['local_directory_output']}"
+            )
             logger.info("")
 
         # Final summary
@@ -336,23 +361,23 @@ def main():
         "--env",
         choices=ENV_CHOICE,
         default=ENV_CHOICE[0],
-        help="Execution environment (only 'local' supported)"
+        help="Execution environment (only 'local' supported)",
     )
     parser.add_argument(
         "--profile",
         choices=PROFILE_CHOICE,
         default=PROFILE_CHOICE[0],
-        help="DBT profile to execute"
+        help="DBT profile to execute",
     )
     parser.add_argument(
         "--use-sftp",
         action="store_true",
-        help="Upload output files to SFTP after export (requires .env with SFTP credentials)"
+        help="Upload output files to SFTP after export (requires .env with SFTP credentials)",
     )
     parser.add_argument(
         "--dry-run-upload",
         action="store_true",
-        help="Simule l'upload SFTP final sans déposer les fichiers"
+        help="Simule l'upload SFTP final sans déposer les fichiers",
     )
     args = parser.parse_args()
     if args.dry_run_upload and not args.use_sftp:
@@ -361,8 +386,12 @@ def main():
     # Setup configuration
     logger = setup_logger(args.env, f"logs/log_{args.env}_sftp.log")
     config = load_metadata_YAML(METADATA_YML, args.profile, logger, ".")
-    db_config = load_metadata_YAML(PROFILE_YML, args.profile, logger, ".")["outputs"][args.env]
-    staging_db_config = load_metadata_YAML(PROFILE_YML, "Staging", logger, ".")["outputs"][args.env]
+    db_config = load_metadata_YAML(PROFILE_YML, args.profile, logger, ".")["outputs"][
+        args.env
+    ]
+    staging_db_config = load_metadata_YAML(PROFILE_YML, "Staging", logger, ".")[
+        "outputs"
+    ][args.env]
     today = date.strftime(date.today(), "%Y_%m_%d")
 
     # Print execution info
@@ -392,7 +421,7 @@ def main():
         today=today,
         logger=logger,
         use_sftp=args.use_sftp,
-        dry_run_upload=args.dry_run_upload
+        dry_run_upload=args.dry_run_upload,
     )
 
 

@@ -9,6 +9,7 @@ output/**
 /data/**
 **/dbt_packages/
 **/target/
+.DS_Store/*
 
 **/package-lock.yml
 .user.yml
