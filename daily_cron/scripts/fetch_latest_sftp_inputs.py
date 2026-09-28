@@ -3,8 +3,9 @@
 import json
 import os
 from pathlib import Path
-from paramiko import Transport, SFTPClient
+
 from dotenv import load_dotenv
+from paramiko import SFTPClient, Transport
 
 load_dotenv()
 
@@ -19,12 +20,32 @@ LOCAL_DIR.mkdir(parents=True, exist_ok=True)
 MAPPING_FILE = LOCAL_DIR / "_source_filenames.json"
 
 FILES_TO_FETCH = [
-    ("/SCN_BDD/SIICEA/SIICEA", "SIICEA_GROUPECIBLES_SCN_", "sa_siicea_cibles.csv.gpg", ".gpg"),
-    ("/SCN_BDD/SIICEA/SIICEA", "SIICEA_DECISIONS_SCN_", "sa_siicea_decisions.csv.gpg", ".gpg"),
+    (
+        "/SCN_BDD/SIICEA/SIICEA",
+        "SIICEA_GROUPECIBLES_SCN_",
+        "sa_siicea_cibles.csv.gpg",
+        ".gpg",
+    ),
+    (
+        "/SCN_BDD/SIICEA/SIICEA",
+        "SIICEA_DECISIONS_SCN_",
+        "sa_siicea_decisions.csv.gpg",
+        ".gpg",
+    ),
     ("/SCN_BDD/SIREC", "sirec_", "sa_sirec.csv", ".csv"),
     ("/SCN_BDD/SIVSS", "SIVSS_SCN_", "sa_sivss.csv.gpg", ".gpg"),
-    ("/SCN_BDD/SIICEA/SIICEA", "SIICEA_MISSIONSPREV_SCN_", "sa_siicea_missions_prog.csv.gpg", ".gpg"),
-    ("/SCN_BDD/SIICEA/SIICEA", "SIICEA_MISSIONSREAL_SCN_", "sa_siicea_missions_real.csv.gpg", ".gpg"),
+    (
+        "/SCN_BDD/SIICEA/SIICEA",
+        "SIICEA_MISSIONSPREV_SCN_",
+        "sa_siicea_missions_prog.csv.gpg",
+        ".gpg",
+    ),
+    (
+        "/SCN_BDD/SIICEA/SIICEA",
+        "SIICEA_MISSIONSREAL_SCN_",
+        "sa_siicea_missions_real.csv.gpg",
+        ".gpg",
+    ),
 ]
 
 
@@ -45,7 +66,8 @@ def get_latest_file(sftp, remote_dir, keyword, required_suffix):
     files = sftp.listdir_attr(remote_dir)
 
     candidates = [
-        f for f in files
+        f
+        for f in files
         if keyword in f.filename and f.filename.endswith(required_suffix)
     ]
 
